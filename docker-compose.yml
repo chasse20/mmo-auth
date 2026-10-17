@@ -1,0 +1,18 @@
+
+services:
+  yugabyte:
+    image: yugabytedb/yugabyte:2026.1.2.0-b137
+    hostname: yugabyte
+    command:
+      - bin/yugabyted
+      - start
+      - --base_dir=/home/yugabyte/yb_data
+      - --background=false
+    ports:
+      - "127.0.0.1:5433:5433"
+      - "127.0.0.1:15433:15433"
+    volumes:
+      - yugabyte_data:/home/yugabyte/yb_data
+
+volumes:
+  yugabyte_data:

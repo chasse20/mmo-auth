@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package mmo.auth.v1;
+
+// Authentication messages shared by browser and native clients
+message AuthenticateSteamTicketRequest {
+	bytes ticket = 1;
+}
+
+message ExchangeRequest {}
+
+message RefreshRequest {
+	string refresh_token = 1;
+}
+
+message RevokeRequest {
+	string refresh_token = 1;
+}
+
+message RevokeResponse {
+	bool revoked = 1;
+}
+
+message TokenResponse {
+	string access_token = 1;
+	string refresh_token = 2;
+	uint64 expires_in_seconds = 3;
+	string account_id = 4;
+}
+
+message ValidateRequest {
+	string access_token = 1;
+}
+
+message ValidateResponse {
+	bool valid = 1;
+	string account_id = 2;
+}

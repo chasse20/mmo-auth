@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                \"SteamAccountId\" AS steam_account_id,\n                \"AccountId\" AS account_id\n            FROM public.\"SteamAccount\"\n            WHERE \"SteamAccountId\" = $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "steam_account_id",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "\"SteamAccount\"",
+            "name": "SteamAccountId"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "account_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "\"SteamAccount\"",
+            "name": "AccountId"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "d4531d81178c684ee759784443e4c285fa3eac6aee5a6b0890cf246bc299741b"
+}

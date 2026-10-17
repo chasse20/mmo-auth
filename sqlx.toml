@@ -1,0 +1,5 @@
+[common]
+database-url-var = "DATABASE_URL"
+
+[migrate]
+table-name = 'public."Migration"'

@@ -1,0 +1,12 @@
+{
+	"[rust]": {
+		"editor.defaultFormatter": "rust-lang.rust-analyzer",
+		"editor.formatOnSave": true,
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4,
+		"editor.detectIndentation": false
+	},
+		"rust-analyzer.cargo.extraEnv": {
+		"DATABASE_URL": "postgresql://yugabyte@127.0.0.1:5433/mmo_auth?sslmode=disable"
+	}
+}
