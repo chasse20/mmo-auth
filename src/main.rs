@@ -39,7 +39,7 @@ async fn main() -> anyhow::Result<()> {
 	let temp_issuer = temp_issuer_result?;
 
 	// Apply the embedded SQLx migrations before accepting requests
-	let temp_pool = PgPoolOptions::new()
+	let temp_database_pool = PgPoolOptions::new()
 		.max_connections(temp_config.database_max_connections)
 		.acquire_timeout(temp_config.database_acquire_timeout)
 		.connect(&temp_config.database_url)
@@ -47,31 +47,32 @@ async fn main() -> anyhow::Result<()> {
 		.context("Failed to connect to YugabyteDB")?;
 
 	sqlx::migrate!("./migrations")
-		.run(&temp_pool)
+		.run(&temp_database_pool)
 		.await
 		.context("Failed to apply SQLx database migrations")?;
 	tracing::info!("Database migrations validated and applied");
 
-	let temp_state = AppState::new(&temp_config, temp_pool.clone(), temp_issuer)?;
+	let temp_state = AppState::new(&temp_config, temp_database_pool.clone(), temp_issuer)?;
 	tracing::info!("Auth service initialized");
 
-	let temp_stop_maintenance = CancellationToken::new();
+	let temp_cancellation_token = CancellationToken::new();
 	let temp_maintenance_task = tokio::spawn(maintenance::run(
-		temp_pool.clone(),
-		temp_stop_maintenance.child_token(),
+		temp_database_pool.clone(),
+		temp_cancellation_token.child_token(),
 		temp_config.maintenance_interval,
 	));
-	let temp_result = http::serve(
+
+	let temp_http_result = http::serve(
 		temp_config.listen_address,
 		temp_config.shutdown_grace_duration,
 		temp_state,
 	)
 	.await;
 
-	temp_stop_maintenance.cancel();
+	temp_cancellation_token.cancel();
 
 	let _ = tokio::time::timeout(temp_config.shutdown_grace_duration, temp_maintenance_task).await;
 
-	temp_pool.close().await;
-	temp_result
+	temp_database_pool.close().await;
+	temp_http_result
 }
